@@ -106,9 +106,11 @@ void main(int argc, char *argv[]){
     read_matrix(argv[2], mat2);
     print_matrix(mat2, "matrix2");
 
-    /*matrix_t res;
+    matrix_t res;
     res = mult(mat1, mat2);
-    print_matrix(res, "Solution");*/
+    print_matrix(res, "Solution");
+    
     free(mat1.m);
     free(mat2.m);
+    free(res.m);
 }
