@@ -1,0 +1,231 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[magyar]{babel}
+\usepackage{caption}
+% horizontal line
+\usepackage{hhline}
+
+% eps formátumú ábrák --> pdflatex fordításhoz!!
+\usepackage{epsfig}
+
+
+% ha betűszíneket is szeretnénk használni
+\usepackage{color}
+
+% Margók egyéni beállításai
+\usepackage{anysize}
+\marginsize{1.64cm}{1.64cm}{1.2cm}{2.4cm} %\left right top bottom
+
+% vakszöveg
+\usepackage{lipsum}
+\usepackage{blindtext}
+
+% A HIVATKOZÁSOKHOZ HASZNÁLT CSOMAGOK. RÉSZLETESEBBEN LD: google -> latex bibtex
+\usepackage[numbers, square, comma, sort&compress]{natbib}
+%\usepackage[format=hang,labelsep=period]{caption}
+\usepackage{hyperref}
+\usepackage[unicode]{hyperref}   % ezzel a hivatkozások linkké válnak
+\usepackage{bookmark}
+\hypersetup{bookmarksopen={true}}
+\hypersetup{bookmarksopenlevel={2}}
+\hypersetup{bookmarksnumbered={true}}
+\hypersetup{
+  colorlinks,%
+  citecolor=red,%
+  filecolor=black,%                                                                                                                                               
+  linkcolor=blue,%
+  urlcolor=green
+}
+
+
+\frenchspacing
+\setlength{\parskip}{2ex}
+\setlength{\headsep}{0,4cm}
+\setlength{\headheight}{4pt}
+
+\renewcommand{\contentsname}{Tartalomjegyzék}
+%\renewcommand{\headrulewidth}{0,05pt}
+%\renewcommand{\footrulewidth}{0pt}
+
+\begin{document}
+
+%\begin{titlepage}   
+\begin{center}
+\thispagestyle{empty}  
+
+\vspace*{0.7cm}
+\rule{\linewidth}{0.5mm} \\[3mm]
+\vspace*{0.7cm}
+
+{\LARGE A Kutatómunka információs eszközei}
+
+\vspace*{0.7cm}
+\rule{\linewidth}{0.5mm} \\[3mm]
+\rule{\linewidth}{0.5mm} \\[3mm]
+
+
+
+{\Large Gyakorlat\\}
+
+\vspace*{0.7cm}
+\rule{\linewidth}{0.5mm} \\[3mm]
+  {Jegyzőkönyv} \\[3mm]
+  \vspace*{1cm}
+{\footnotesize Írta: Misur Patricia} \\
+{\tiny misurpatricia@gmail.hu}
+
+  \vspace*{2cm}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.4\textwidth]{elte.png}
+\end{center}
+\end{figure}
+\end{center}
+\end{titlepage}
+
+
+\newpage 
+\tableofcontents
+\newpage
+
+
+
+\section{Bevezetés}
+A jegyzőkönyvet a C programozás nevű kurzus egyik feladata során megírt kódomról írom, ami két mátrix összeszorzását valósítja meg. A program Linux operációs rendszeren (Ubuntu), C nyelven készült, a fejlesztéséhez Visual Studio Code-ot használtam, Cmake-kel fordítva. A jegyzőkönyvet \LaTeX\-ben írtam.
+
+\subsection{A \LaTeX\-ről néhány szó}
+
+A \LaTeX\ egy olyan szövegformázó rendszer, amely főként olyan dokumentumok létrehozására alkalmas, ami számos matematikai képletet, szimbólumot tartalmaz, ezért jelentős részben tudományos cikkek/szakdolgozatok megírásakor használják.\\*
+A szöveget jelölésekkel látjuk el, amelyek hordozzák a megjelenítési információkat, majd egy fordítóprogram létrehozza a kész dokumentumot.\\*
+Több operációs rendszeren elérhető, én Linuxon a Texmaker programot használom, ami a következő parancs terminálba való bevitelével telepíthető:
+\begin{verbatim}
+sudo apt-get install texmaker
+\end{verbatim}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.9\textwidth]{latex.jpg}
+\caption*{Szép matematikai kifejezések \LaTeX\-ban írva, forrás: https://i.imgur.com/LoIcQ.jpg }
+\end{center}
+\end{figure}
+
+
+\section{A kód fejlesztése}
+\subsection{Első fázis}
+
+A jegyzőkönyv alapjául szolgáló, C nyelvben megírt, mátrixokat összeszorzó program fejlődését mutatom be. A kódot Vscode-ban írom, a fordítást és futtatást először az operációs rendszer konzolján hajtom végre, terminálból. Elsőkörben a GitHub-ra egy olyan verziót töltöttem fel, ami "core dumbed" hibaüzenettel tért vissza. Hibás memóriakezelésnél (nem inicializált, vagy nem érvényes pointer) gyakran "Segmentation Fault (core dumped)" üzenetet kapunk. \\*
+A program bemenetként 4 adatot vár, az első kettő két, külön beolvasott .txt kiterjesztésű file, amik megfelelően tördelve egy-egy mátrix objektumot jelölnek, az utolsó kettő, pedig az összeszorozhatóság feltételeit biztosító tulajdonságok.\\*
+A main.c fordítása gcc-vel:
+\begin{verbatim}
+gcc main.c -o main
+\end{verbatim}
+Futtatás:
+\begin{verbatim}
+./main matrix.txt matrix2.txt 3 3
+\end{verbatim}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{cd.png}
+\caption*{Hibás memóriakezelés hibaüzenete}
+\end{center}
+\end{figure}
+
+
+\subsection{Második fázis}
+Következő lépésként magát a szorzás műveletét elvégző függvényt kivettem, és így próbáltam futattni a kódot, ami szintén memóriaallokációs hibát dobott. Újra átnézve világossá vált, hogy a probléma ott volt, hogy előbb foglaltam memóriát az objektumnak, minthogy az értéket kapott volna. Ezt javítva, újból futtatva így már a program kiírja helyesen a beolvasott .txt fileokból a két mátrixot. (Még mindig gcc-vel fordítva.) 
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{readmat.png}
+\caption*{A beolvasott két file megjelenítése konzolon}
+\end{center}
+\end{figure}
+
+
+\subsection{A végleges, működő program}
+
+Megtalálva a hibát, már nem volt nehéz megkonstruálni a teljes, működő kódot, csak hozzá kellett adni a szorzást elvégző kikommentelt kódrészletet.
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{mult.png}
+\caption*{A beolvasott két file megjelenítése konzolon}
+\end{center}
+\end{figure}
+
+\newpage
+
+\section{Visual Studio Code}
+
+A Vscode egy több száz nyelvet támogató, dinamikusan fejlődő fejlesztői környezet. Támogatja a Git-et.
+\subsection{Cmake}
+A Vscode-hoz bővítményként hozzá tudjuk adni a Cmake-et, mégpedig úgy, hogy az Extensions-re kattintva a keresőbe beírjuk, hogy Cmake, és a Cmake-et, valamint a Cmake Tools-t kell telepítenünk a Vscode-on belül. Ha ezzel megvagyunk, a projektünket a már a Cmake segítségével tudjuk buildelni.
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{cmake.png}
+\caption*{Cmakekel való buildelés Vscodeon belül}
+\end{center}
+\end{figure}
+
+\section{GitHub}
+\subsection{Mi az a GitHub?}
+A Git egy verziókezelő, arra szolgál, hogy fileok (programok, dokumentációk, stb) különböző verzióit kordában tartsa, elkönyvelje, tárolja és megossza. Röviden összefoglalva a Git annyit csinál, hogy amikor azt mondjuk neki (commit), akkor egy directoryról csinál magának egy helyi adatbázist a .git nevű könyvtárba. Ezekkel az adatbázisokkal \\*
+\begin{itemize}
+\item nyomon tudja követni, hogy mikor hogyan változott a könyvtárunk
+\item vissza tudja állítani bármelyik korábbi (commit-olt) állapotát a könyvtárnak
+\item szinkronizálni tud egy másik gépen levő hasonló könyvtárral, közben intelligensen átvezeti a változásokat, illetve jelez, ha nem megy neki
+\end{itemize}
+A szemléletbeli különbség ahhoz képest ahogy eddig éltünk az, hogy a dolgaink nem akkor vannak elmentve ha megnyomtuk az editorban a save gombot, hanem csak akkor, ha a git adatbázisunkba is bekerültek (commit). A dolgok tehát röviden a következőképp fognak kinézni: frissítjük a helyi adatbázisunkat a központi Szerver nevű gépéről (arra az esetre gondolva, ha valaki más továbbírta azóta, hogy láttuk; pull). Ezután dolgozunk a filejainkon. Ha eljutottunk egy olyan állapotba amit érdemes menteni, akkor megmondjuk melyik filet vegye figyelembe (add, vagy stage), majd mentjük az adatbázisba (commit). Végül pedig feltöltjük a módosított adatbázist a Szerver-re (push).
+
+\subsection{A Git telepítése Linuxra}
+Terminálba a következő sorokat kell bevinni:
+\begin{verbatim}
+sudo apt install git-all
+\end{verbatim}
+\subsection{A Git használata - Alapok}
+A github.com-ra való regisztráció után, létre tudjuk hozni a saját repositorynkat, amit össze tudunk kötni a szamítógépünkkel klónozzással.
+
+\begin{verbatim}
+git clone [url cím]
+\end{verbatim}
+Van tehát egy könyvtárunk egy git adatbázissal. Ebben a könyvtárban módosítunk valamit, elmentjük ahogy szoktuk a munkánkat, viszont ettől még nem kerül be a Git adatbázisába. Ehhez először ki kell jelölnünk, hogy mely fileokat ajánljuk a Git figyelmébe (add. - minden file)
+
+\begin{verbatim}
+git add file1 file2
+git add.
+\end{verbatim}
+Ezután committolunk, érdemes megjegyzést fűzni hozzá:
+
+\begin{verbatim}
+git commit -m "megjegyzes"
+\end{verbatim}
+Most a megváltozott adatbázisunkat szeretnénk visszatölteni a Szerverre. Ha klónozással szereztük az adatbázist, akkor ehhez csak annyit kell mondanunk, hogy:
+
+\begin{verbatim}
+git push
+\end{verbatim}
+\textit{Forrás: https://people.maths.bris.ac.uk/~mb13434/git/miagit.html}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{gitgcc.png}
+\caption*{A gcc-vel fordított file-ok github-ra töltése}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{github.png}
+\caption*{A repository a push-olás után}
+\end{center}
+\end{figure}
+
+A repository a GitHub-on a következő linken érhető el:
+\begin{center}
+\href{url}{https://github.com/pmisur/matrixmultiplication}
+\end{center}
+\end{document}
