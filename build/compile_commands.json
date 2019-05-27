@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/patriciamisur/projects/kutinfo/matrixmultiplication/build",
+  "command": "/usr/bin/c99-gcc   -g   -o CMakeFiles/matrixmultiplication.dir/main.c.o   -c /home/patriciamisur/projects/kutinfo/matrixmultiplication/main.c",
+  "file": "/home/patriciamisur/projects/kutinfo/matrixmultiplication/main.c"
+}
+]
